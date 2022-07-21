@@ -1,6 +1,10 @@
+'''
+The following program detects Green objects and masks them 
+The video file is used as an example
+'''
 import cv2
 import numpy as np
-feed = cv2.VideoCapture('C:/Users/waigu/OneDrive/Desktop/ToDo/Autonomous car/green_ball.mp4')
+feed = cv2.VideoCapture('path for video')#paste video path (change // to \\)
 while feed.isOpened():
 
     rt,frame = feed.read()
@@ -10,11 +14,11 @@ while feed.isOpened():
     hsv = cv2.cvtColor(colour,cv2.COLOR_RGB2HSV)
     print(hsv)
     '''
-
-    lower = np.array([20,10,10])
-    upper = np.array([70,255,255])
+    #Green in HSV == ([60,255,255])
+    lower = np.array([20,10,10])#lower bound for green in HSV
+    upper = np.array([70,255,255])#upper boung in HSV
     mask = cv2.inRange(frame, lower,upper)
-    #feed2 = cv2.bitwise_and(frame,frame,mask=mask)
+  
     cv2.imshow('Normal',frame)
     cv2.imshow('Mask',mask)
     #cv2.imshow('Color',feed2)
