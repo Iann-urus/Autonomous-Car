@@ -1,30 +1,48 @@
-'''
-The following program detects Green objects and masks them 
-The video file is used as an example
-'''
-import cv2
+import cv2 as cv
 import numpy as np
-feed = cv2.VideoCapture('path for video')#paste video path (change // to \\)
-while feed.isOpened():
-
-    rt,frame = feed.read()
-    '''
-    #COnvert RGB To HSV
-    colour = np.uint8([[[0,255,0]]])
-    hsv = cv2.cvtColor(colour,cv2.COLOR_RGB2HSV)
-    print(hsv)
-    '''
-    #Green in HSV == ([60,255,255])
-    lower = np.array([20,10,10])#lower bound for green in HSV
-    upper = np.array([70,255,255])#upper boung in HSV
-    mask = cv2.inRange(frame, lower,upper)
-  
-    cv2.imshow('Normal',frame)
-    cv2.imshow('Mask',mask)
-    #cv2.imshow('Color',feed2)
+feed = cv.VideoCapture(0)
     
-    h = cv2.waitKey(5)
-    if h == '53':
+while feed.isOpened():
+    rt,frame = feed.read()
+    #resize the video
+    scale_down =int((frame.shape[1]*50/100)),int((frame.shape[0]*50/100))
+    frame = cv.resize(frame,scale_down,interpolation=cv.INTER_AREA)
+    hsv = cv.cvtColor(frame,cv.COLOR_BGR2HSV)#change colour space
+    '''
+    Create masks for the colours RED & GREEN
+    '''
+    #Range of RED(HSV 0 255 255)
+    up_r = np.array([180,255,255],np.uint8)
+    low_r = np.array([136,87,111],np.uint8)
+    mask_r = cv.inRange(hsv,low_r,up_r)
+    #Range of GREEN(HSV 60 255 255)
+    up_g = np.array([102,255,255],np.uint8)
+    low_g = np.array([25,52,72],np.uint8)
+    mask_g = cv.inRange(hsv,low_g,up_g)
+    #create a kernel to dilate the frame
+    kernel = np.ones((5,5),np.uint8)
+    #join the mask and original frame
+    mask_r = cv.dilate(mask_r,kernel)
+    new_r = cv.bitwise_and(frame,frame,mask=mask_r)
+    mask_g = cv.dilate(mask_g,kernel)
+    new_g = cv.bitwise_and(frame,frame,mask=mask_g)
+    #create contours for RED Objects 
+    contours,hierarchy = cv.findContours(mask_r,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
+    for pic,contour in enumerate(contours):
+        area = cv.contourArea(contour)
+        if(area > 300):
+            x,y,w,h = cv.boundingRect(contour)
+            frame = cv.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),2)
+    #create contours for GREEN Objects
+    contours,hierarchy = cv.findContours(mask_g,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
+    for pic,contour in enumerate(contours):
+        area = cv.contourArea(contour)
+        if(area>300):
+            x,y,w,h = cv.boundingRect(contour)
+            frame = cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
+    cv.imshow("ObjectDetection",frame)
+    h = cv.waitKey(5)
+    if h == 53:
         break
 feed.release()   
-cv2.destroyAllWindows()
+cv.destroyAllWindows()
