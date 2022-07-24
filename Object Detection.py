@@ -1,3 +1,7 @@
+'''
+BY Iann-urus
+github@https://github.com/Iann-urus
+'''
 import cv2 as cv
 import numpy as np
 feed = cv.VideoCapture(0)
