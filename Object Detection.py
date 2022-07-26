@@ -37,6 +37,9 @@ while feed.isOpened():
         if(area > 300):
             x,y,w,h = cv.boundingRect(contour)
             frame = cv.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),2)
+            Green = False
+            if(Green == False):
+                print("RED")
     #create contours for GREEN Objects
     contours,hierarchy = cv.findContours(mask_g,cv.RETR_TREE,cv.CHAIN_APPROX_SIMPLE)
     for pic,contour in enumerate(contours):
@@ -44,6 +47,9 @@ while feed.isOpened():
         if(area>300):
             x,y,w,h = cv.boundingRect(contour)
             frame = cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
+            Green = True
+            if(Green == True):
+                print('GREEN')
     cv.imshow("ObjectDetection",frame)
     h = cv.waitKey(5)
     if h == 53:
