@@ -7,11 +7,11 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import RPi.GPIO as GPIO            # import RPi.GPIO module  
 from time import sleep# lets us have a delay
-'''
+
 GPIO.setmode(GPIO.BCM)             # choose BCM or BOARD  
 GPIO.setup(16, GPIO.OUT)
 GPIO.setup(26, GPIO.OUT)
-'''
+
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
@@ -30,9 +30,7 @@ def msk_RED():
             x,y,w,h = cv.boundingRect(contour)
             image = cv.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),2)
             Green = False
-            if(Green == False):
-                print("Kr")#Keep Right
-                
+            if(Green == False)
                 GPIO.output(16, 0)         # set GPIO24 to 1/GPIO.HIGH/True  
                 
 def msk_GREEN():
@@ -46,8 +44,7 @@ def msk_GREEN():
             image = cv.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
             Green = True
             if(Green == True):
-                print('Kl')#Keep Left
-            
+               
                 GPIO.output(26, 0)         # set GPIO24 to 1/GPIO.HIGH/True  
                 
 while True:
@@ -57,6 +54,7 @@ while True:
         # and occupied/unoccupied text
         frame = image.array
         hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+        
         #MASKS
         #Range of RED(HSV 0 255 255)
         up_r = np.array([178,255,255],np.uint8)#[180,255,255]
@@ -75,22 +73,27 @@ while True:
         Green_blur = cv.GaussianBlur(mask_g,(51,51),0)
         #Threshold the blurred mask(GREEN)
         g,G_Thresh = cv.threshold(Green_blur,50,255,cv.THRESH_BINARY)
+        
         cv.imshow("Main",frame)
         cv.imshow("Green",G_Thresh)
         cv.imshow("Red",R_Thresh)
         cv.imshow("Mask Green",mask_g)
         cv.imshow("Mask Red",mask_r)
+        
         h = cv.waitKey(5)
         if h == 53:
-            break      
+            break
+            
         # clear the stream in preparation for the next frame
         rawCapture.truncate(0)
+        
         #Find any objects
         msk_GREEN()
         msk_RED()
     cv.destroyAllWindows()
     time.sleep(5)
-'''
+#Function for calibration depending on the lighting
+
 def calibrate():
     def nothing(x):
         pass
@@ -125,4 +128,3 @@ def calibrate():
             rawCapture.truncate(0)
             if key == 27:
                     break
-'''
