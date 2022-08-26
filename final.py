@@ -92,8 +92,8 @@ while True:
         msk_RED()
     cv.destroyAllWindows()
     time.sleep(5)
+    
 #Function for calibration depending on the lighting
-
 def calibrate():
     def nothing(x):
         pass
