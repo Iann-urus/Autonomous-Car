@@ -12,13 +12,12 @@
   };
   
 //Motor connections
-int enA = 11;
-int in1 = 10;
-int in2 = 9;
+int enA = 1;
+int in1 = 20;
+int in2 = 3;
 
 //Global Variables
 int counter,counter2 = 0;//keep track of the laps
-bool state,state2 = true; //helps determine if the track is clockwise or not
 //PID Control
 volatile int Left,Right,D_fe,Sx,Cp,Dp,Kpe = 0;
 
@@ -28,19 +27,21 @@ volatile int Left,Right,D_fe,Sx,Cp,Dp,Kpe = 0;
 // our RGB -> eye-recognized gamma color
 byte gammatable[256];
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_1X);
-int ledpin =7;
 float red,green,blue = 0;
 
 //Servo Object PWM-3, 5, 6, 9, 10, 11
 #define servoPin 5
 Servo servo;
 
+//Timing(Delay Replacement)
+long pM,pM2,pM3 = 0; //Comparison for the timer,not int because it quickly becomes big
+long hcsr04 = 50;//the intervals for the ultrasonic sensors 
+
 void setup() {
 servo.attach(servoPin);
 Serial.begin(115200);
 
-//motors
-  // Set all the motor control pins to outputs
+// Set all the motor control pins to outputs
   pinMode(enA, OUTPUT);
   pinMode(in1, OUTPUT);
   pinMode(in2, OUTPUT);
@@ -71,11 +72,12 @@ for (int i=0; i<256; i++) {
 
 void loop() {
   //Get sensor input(Critical Function)
-  //noInterrupts();
-     tcs.setInterrupt(false);  // turn on LED
-    delay(50);
-     
-      tcs.setInterrupt(true);  // turn off LED
+  //Get sensor readings every 50ms
+  unsigned long cM = millis();
+  if(cM - pM > hcsr04){
+    pM = cM;
+    tcs.setInterrupt(false);  // turn on LED
+    tcs.setInterrupt(true);  // turn off LED
     Left = sonar[0].ping_cm();
     Right = sonar[1].ping_cm();
   
@@ -85,18 +87,26 @@ void loop() {
      if(Right > Left){
       Cp = Right;
      }
+  
+  /*
+  if(currentMillis2 - previousMillis2 > 2000){
+    previousMillis2 = currentMillis2;
+    Serial.print("Left:");Serial.print(Left);
+    Serial.print(", Right");Serial.println(Right);
+  */
+    
      //Colour sensor
     tcs.getRGB(&red, &green, &blue);
     red = int(red);
     green = int(green);
     blue = int(blue);
-    no_obstacles();
+  }
     Serial.print("R: "); Serial.print(red); Serial.print(" ");
     Serial.print("G: "); Serial.print(green); Serial.print(" ");
     Serial.print("B: "); Serial.print(blue); Serial.print(" ");
     Serial.println(" ");
     Serial.flush();
-
+    no_obstacles();
 }
 
 /*
@@ -107,6 +117,7 @@ Steering Angle(Sx)= Proprtional Gain(Kp) * Cross Track Error(Kpe)
 Kp = Maximum Output/Input
 Kpe = Current position(Cp) - Desired Position(Dp)[Volatile]
 */
+
 void no_obstacles(){
   //Find Kp
   D_fe = Left + Right; //This is the most the car can be away from one wall
@@ -136,25 +147,30 @@ void no_obstacles(){
   }
   
   //Turn Right
-    if(state == true & bool(int(red == NULL) & int(green == NULL))){
-      // deccelerate from normal to 1/4 speed
-      for (int i = 130; i < 65; --i) {
-        analogWrite(enA, i);
-      }
-      servo.write(0);
-      delay(1000);
-      servo.write(90);//90 is the midpoint
-      delay(1000);
-      servo.write(Sx);
-      state2 = false;
-      // Turn on motors
-      digitalWrite(in1, HIGH);
-      digitalWrite(in2, LOW);
+    if(bool(int(red == NULL) & int(green == NULL))){
+        // Turn on motors
+        digitalWrite(in1, HIGH);
+        digitalWrite(in2, LOW);
+        
+        // deccelerate from normal to 1/4 speed
+        for (int i = 130; i < 65; --i) {
+          analogWrite(enA, i);
+        }
+        
+        servo.write(90);
+        unsigned long cM2 = millis();
+        //Serial.println(servo.read());
+        if(cM2 - pM2 > 5000){
+          pM2 = cM2;
+          servo.write(Sx);
+          //Serial.println(servo.read());
+        }
+            
+        counter = counter++; 
       
-      counter = counter++; 
   }
     //Turn Left
-    if(state2 == true & bool(int(blue == NULL) & int(green == NULL))){
+    if(bool(int(blue == NULL) & int(green == NULL))){
       // Turn on motors
       digitalWrite(in1, HIGH);
       digitalWrite(in2, LOW);
@@ -163,11 +179,11 @@ void no_obstacles(){
         analogWrite(enA, i);
       }
       servo.write(180);
-      delay(1000);
-      servo.write(90);
-      delay(1000);
+      unsigned long cM3 = millis();
+      if(cM3 - pM3 > 5000){
+      pM3 = cM3;
       servo.write(Sx);
-      state = false;
+      }
       counter = counter++;
   }
 }
