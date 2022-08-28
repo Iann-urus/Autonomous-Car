@@ -125,6 +125,7 @@ void no_obstacles(){
   int Kp = (Mx/D_fe);
 
   //Find Kpe
+  Dp = ((D_fe)/2);
   Kpe = (Cp-Dp);
 //Steering Angle for normal Mode
   Sx = (Kp*Kpe);  
