@@ -5,7 +5,7 @@
 
 This project is an self-driving car with object avoidance.
 
-Team members:Ian, Sammuel, Immanuel.
+Team members: Ian, Sammuel, Immanuel.
 
 # Brief Overview.
 This car was designed to participate in the WRO Future Engineers Category.
