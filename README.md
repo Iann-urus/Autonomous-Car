@@ -13,7 +13,8 @@ This documentation explains how the car functions as well as the solutions for v
 Team Information is provided as well.
 
 # Hardware Schematic
-![Autonomous car (1)](https://user-images.githubusercontent.com/67041860/188293993-615110ff-2664-4ae3-b00f-385ad0c1b102.png)
+![Autonomous car (2)](https://user-images.githubusercontent.com/67041860/188294005-5e037af2-af50-4e74-951e-e2a602ba9368.png)
+
 
 
 
