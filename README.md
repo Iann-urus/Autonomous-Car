@@ -27,8 +27,35 @@ Instead, one car per attempt will try to achieve the best time by driving severa
    The traffic sign to keep to the right side of the lane is a red pillar. 
    The traffic sign to keep to the left side of the lane is a green pillar.
    The vehicle is not allowed to move or knock down the traffic signs.
+   
+ # Turning the car around corners
+ In order to turn the car around corners our team took advantage of the coloured strokes in the corners.
+ 
+ ![Screenshot 2022-09-04 052815](https://user-images.githubusercontent.com/67041860/188294534-1f244f6a-5acb-4698-8cff-1d80c503d3d2.png)
+
+In order to detect the colours we used a TCS230 TCS3200D Colour Recognition Sensor. 
+
+We just need to convert the CMYK Colour Space to RGB and then differentiate between the orange and red.
+
+         The Orange colour- 255, 102, 0 (RGB)
+         The Blue colour-  0, 51, 255.
+
+Not only that but the colours also help us to know whether to turn left or right depending on the one detected first.
+
+To instruct the servo we used a conditional statement to check if any of the colours has been detected, if so we turn the servo 90 degrees for a few seconds.
 
 
+         if(bool(int(blue == NULL) & int(green == NULL))){
+           servo.write(180);
+               unsigned long cM3 = millis();
+               if(cM3 - pM3 > 5000){
+               pM3 = cM3;
+               servo.write(Sx);
+               }
+               counter = counter++;
+           }
+
+# Steering the Car(No Objects)
 
 
 
