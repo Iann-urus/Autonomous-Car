@@ -18,6 +18,7 @@ Team Information is provided as well.
 # Setting
 The self-driving car challenge in this season is a Time Attack race: there will not be multiple cars at the same time on the track. 
 Instead, one car per attempt will try to achieve the best time by driving several laps fully autonomously. 
+![Screenshot 2022-09-04 051936](https://user-images.githubusercontent.com/67041860/188294321-a91b329c-b885-4ffd-91b0-917c33b6aa09.png)
 
 # Traffic Signs
 The traffic signs indicate the side of the lane the vehicle has to follow.
