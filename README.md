@@ -12,5 +12,9 @@ This car was designed to participate in the WRO Future Engineers Category.
 This documentation explains how the car functions as well as the solutions for various problems.
 Team Information is provided as well.
 
+# Hardware Schematic
+![Autonomous car (1)](https://user-images.githubusercontent.com/67041860/188293993-615110ff-2664-4ae3-b00f-385ad0c1b102.png)
+
+
 
 
