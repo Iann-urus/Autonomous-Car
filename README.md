@@ -23,6 +23,7 @@ Instead, one car per attempt will try to achieve the best time by driving severa
 
    # Traffic Signs
    The traffic signs indicate the side of the lane the vehicle has to follow.
+   
    The traffic sign to keep to the right side of the lane is a red pillar. 
    The traffic sign to keep to the left side of the lane is a green pillar.
    The vehicle is not allowed to move or knock down the traffic signs.
