@@ -15,6 +15,9 @@ Team Information is provided as well.
 # Hardware Schematic
 ![Autonomous car (4)](https://user-images.githubusercontent.com/67041860/188294082-4ce2c9ac-f2be-43a5-877b-57d8c173704d.png)
 
+# Program Flow
+![Autonomous car (6)](https://user-images.githubusercontent.com/67041860/188424047-e76df53b-0001-4604-b3c4-72052f0333e2.png)
+
 # Game Setting
 The self-driving car challenge in this season is a Time Attack race: there will not be multiple cars at the same time on the track. 
 Instead, one car per attempt will try to achieve the best time by driving several laps fully autonomously. 
@@ -115,6 +118,7 @@ To reduce noise we set a thereshold for the colours to be filtered.This greatly 
 
      #Threshold the blurred mask(GREEN)
       t,R_Thresh = cv.threshold(Red_blur,50,255,cv.THRESH_BINARY)
+      
       
 
  
