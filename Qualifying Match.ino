@@ -48,15 +48,15 @@ void loop(){
 //if(cM - pM > 200){
  // pM = cM;
 if(Left < 41 && Right > 41){
-    gain = 41.0/float(Left);
-    St = round(gain*40.0);
-    servo.write(St+4);
+    gain = 41.0/float(Left),
+    St = round(gain*40.0),
+    servo.write(St+4),
     delay(20);
 }
 if(Right < 41 && Left > 41){
-    gain = float(Right)/41.0;
-    St = round(gain*40.0);
-    servo.write(St+4);
+    gain = float(Right)/41.0,
+    St = round(gain*40.0),
+    servo.write(St+4),
     delay(20);
 } 
      Serial.print("S-");Serial.print(servo.read());
