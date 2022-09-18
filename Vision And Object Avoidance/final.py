@@ -46,7 +46,42 @@ def msk_GREEN():
             if(Green == True):
                
                 GPIO.output(26, 0)         # set GPIO24 to 1/GPIO.HIGH/True  
-                
+
+def calibrate():
+    def nothing(x):
+        pass
+    cv.namedWindow("Trackbars")
+     
+    cv.createTrackbar("B", "Trackbars", 0, 255,nothing)
+    cv.createTrackbar("G", "Trackbars", 0, 255,nothing)
+    cv.createTrackbar("R", "Trackbars", 0, 255,nothing)
+
+    for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+            image = frame.array
+            hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
+
+            B = cv.getTrackbarPos("B", "Trackbars")
+            G = cv.getTrackbarPos("G", "Trackbars")
+            R = cv.getTrackbarPos("R", "Trackbars")
+
+            green = np.uint8([[[B, G, R]]])
+            hsvGreen = cv.cvtColor(green,cv.COLOR_BGR2HSV)
+            lowerLimit = np.uint8([hsvGreen[0][0][0]-10,100,100])
+            upperLimit = np.uint8([hsvGreen[0][0][0]+10,255,255])
+
+            mask = cv.inRange(hsv, lowerLimit, upperLimit)
+
+            result = cv.bitwise_and(image  , image , mask=mask)
+
+            cv.imshow("frame", image)
+            cv.imshow("mask", mask)
+            cv.imshow("result", result)
+
+            key = cv.waitKey(1)
+            rawCapture.truncate(0)
+            if key == 27:
+                    break
+
 while True:
     # capture frames from the camera
     for image in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
@@ -94,37 +129,3 @@ while True:
     time.sleep(5)
     
 #Function for calibration depending on the lighting
-def calibrate():
-    def nothing(x):
-        pass
-    cv.namedWindow("Trackbars")
-     
-    cv.createTrackbar("B", "Trackbars", 0, 255,nothing)
-    cv.createTrackbar("G", "Trackbars", 0, 255,nothing)
-    cv.createTrackbar("R", "Trackbars", 0, 255,nothing)
-
-    for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-            image = frame.array
-            hsv = cv.cvtColor(image, cv.COLOR_BGR2HSV)
-
-            B = cv.getTrackbarPos("B", "Trackbars")
-            G = cv.getTrackbarPos("G", "Trackbars")
-            R = cv.getTrackbarPos("R", "Trackbars")
-
-            green = np.uint8([[[B, G, R]]])
-            hsvGreen = cv.cvtColor(green,cv.COLOR_BGR2HSV)
-            lowerLimit = np.uint8([hsvGreen[0][0][0]-10,100,100])
-            upperLimit = np.uint8([hsvGreen[0][0][0]+10,255,255])
-
-            mask = cv.inRange(hsv, lowerLimit, upperLimit)
-
-            result = cv.bitwise_and(image  , image , mask=mask)
-
-            cv.imshow("frame", image)
-            cv.imshow("mask", mask)
-            cv.imshow("result", result)
-
-            key = cv.waitKey(1)
-            rawCapture.truncate(0)
-            if key == 27:
-                    break
